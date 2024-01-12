@@ -24,6 +24,10 @@ variable "captcha_site_key" {
   type = string
 }
 
+variable "tenant_id" {
+  type = string
+}
+
 resource "azurerm_resource_group" "my_rg" {
   name     = "reservations-resources"
   location = "West US"
@@ -44,7 +48,6 @@ resource "azurerm_service_plan" "reservations_functions" {
   os_type             = "Linux"
   sku_name            = "Y1"
 }
-
 
 resource "azurerm_linux_function_app" "reservations_function_app" {
   name                = "reservations-function-app"
@@ -74,7 +77,7 @@ resource "azurerm_key_vault" "my_key_vault" {
   location                    = azurerm_resource_group.my_rg.location
   resource_group_name         = azurerm_resource_group.my_rg.name
   enabled_for_disk_encryption = true
-  tenant_id                   = azurerm_linux_function_app.reservations_function_app.identity[0].tenant_id
+  tenant_id                   = var.tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
 
@@ -83,7 +86,7 @@ resource "azurerm_key_vault" "my_key_vault" {
 
 resource "azurerm_key_vault_access_policy" "fa_access_policy" {
   key_vault_id = azurerm_key_vault.my_key_vault.id
-  tenant_id    = azurerm_linux_function_app.reservations_function_app.identity[0].tenant_id
+  tenant_id    = var.tenant_id
   object_id    = azurerm_linux_function_app.reservations_function_app.identity[0].principal_id
 
   secret_permissions = [

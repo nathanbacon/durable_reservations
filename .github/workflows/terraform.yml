@@ -42,7 +42,8 @@ jobs:
         id: apply
         run: |
           terraform apply -auto-approve -input=false \
-          -var "captcha_site_key=${{ vars.CAPTCHA_SITE_KEY }}"
+          -var "captcha_site_key=${{ vars.CAPTCHA_SITE_KEY }}" \
+          -var "tenant_id=${{ vars.TENANT_ID }}"
         working-directory: ./terraform
 
       - name: Logout
