@@ -42,7 +42,7 @@ resource "azurerm_service_plan" "reservations_functions" {
 }
 
 
-resource "azurerm_linux_function_app" "mandlebrot_function_app" {
+resource "azurerm_linux_function_app" "reservations_function_app" {
   name                = "reservations-function-app"
   resource_group_name = azurerm_resource_group.my_rg.name
   location            = azurerm_resource_group.my_rg.location
@@ -56,5 +56,30 @@ resource "azurerm_linux_function_app" "mandlebrot_function_app" {
   }
 
   app_settings = {
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_key_vault" "my_key_vault" {
+  name                        = "mykeyvault-reservations"
+  location                    = azurerm_resource_group.my_rg.location
+  resource_group_name         = azurerm_resource_group.my_rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = azurerm_linux_function_app.reservations_function_app.identity[0].tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id = azurerm_linux_function_app.reservations_function_app.identity[0].tenant_id
+    object_id = azurerm_linux_function_app.reservations_function_app.identity[0].principal_id
+
+    secret_permissions = [
+      "Get",
+    ]
   }
 }
