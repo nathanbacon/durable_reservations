@@ -79,13 +79,14 @@ resource "azurerm_key_vault" "my_key_vault" {
   purge_protection_enabled    = false
 
   sku_name = "standard"
+}
 
-  access_policy {
-    tenant_id = azurerm_linux_function_app.reservations_function_app.identity[0].tenant_id
-    object_id = azurerm_linux_function_app.reservations_function_app.identity[0].principal_id
+resource "azurerm_key_vault_access_policy" "fa_access_policy" {
+  key_vault_id = azurerm_key_vault.my_key_vault.id
+  tenant_id    = azurerm_linux_function_app.reservations_function_app.identity[0].tenant_id
+  object_id    = azurerm_linux_function_app.reservations_function_app.identity[0].principal_id
 
-    secret_permissions = [
-      "Get",
-    ]
-  }
+  secret_permissions = [
+    "Get",
+  ]
 }
