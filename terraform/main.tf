@@ -20,6 +20,10 @@ provider "azurerm" {
   }
 }
 
+variable "captcha_site_key" {
+  type = string
+}
+
 resource "azurerm_resource_group" "my_rg" {
   name     = "reservations-resources"
   location = "West US"
@@ -56,6 +60,7 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   }
 
   app_settings = {
+    captcha_site_key = var.captcha_site_key
   }
 
   identity {
