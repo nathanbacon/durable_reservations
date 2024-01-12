@@ -46,3 +46,50 @@ jobs:
       - name: Logout
         run: |
           az logout
+
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_VERSION: "6.0.x"
+      AZURE_WEBAPP_PACKAGE_PATH: "."
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./my-react-app
+
+      - name: Build with Webpack
+        run: |
+          npx webpack --config webpack.config.js
+        working-directory: ./my-react-app
+
+      - name: Copy my-react-app
+        run: |
+          mkdir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/content
+          mv ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/my-react-app/dist/index.html ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/content/index.html
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Build
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+          dotnet publish '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/MyFunction.csproj' -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunctionBuild'
+
+      - name: Publish App
+        uses: actions/upload-artifact@v3
+        with:
+          name: app
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunctionBuild/
