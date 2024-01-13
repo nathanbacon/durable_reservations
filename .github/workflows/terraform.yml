@@ -72,7 +72,7 @@ jobs:
 
       - name: Build with Webpack
         run: |
-          npx webpack --config webpack.config.js
+          npx webpack --config webpack.config.js --env CAPTCHA_SITE_KEY=${{ vars.CAPTCHA_SITE_KEY }}
         working-directory: ./my-react-app
 
       - name: Copy my-react-app
