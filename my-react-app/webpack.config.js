@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const InlineSourceWebpackPlugin = require("inline-source-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -28,6 +29,9 @@ module.exports = {
       compress: true,
       rootpath: "./src",
       noAssetMatch: "warn",
+    }),
+    new webpack.DefinePlugin({
+      "process.env.CAPTCHA_SITE_KEY": process.env.CAPTCHA_SITE_KEY,
     }),
   ],
   output: {
