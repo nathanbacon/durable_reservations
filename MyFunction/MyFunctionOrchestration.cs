@@ -52,6 +52,7 @@ namespace nateisthe.name.Function
         [FunctionName(nameof(ValidateCaptchaAsync))]
         public async Task<bool> ValidateCaptchaAsync([ActivityTrigger] string captchaResult, ILogger log)
         {
+            log.LogInformation("going to validate captcha");
             var captchaSecretKey = Environment.GetEnvironmentVariable("CaptchaSecretKey");
             var client = _httpClientFactory.CreateClient();
             var uri = new Uri(string.Format($"https://www.google.com/recaptcha/api/siteverify?secret={captchaSecretKey}&response={captchaResult}"));
@@ -60,6 +61,7 @@ namespace nateisthe.name.Function
             var captchaValidateResponse = await response.Content.ReadFromJsonAsync<CaptchaValidateResponse>();
             if (!captchaValidateResponse.Success)
             {
+                log.LogInformation("captcha failed");
                 foreach (var error in captchaValidateResponse.ErrorCodes)
                 {
                     log.LogError(error);
