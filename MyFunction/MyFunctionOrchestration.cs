@@ -28,6 +28,8 @@ namespace nateisthe.name.Function
             var captchaResult = context.GetInput<string>();
             var isCaptchaValid = await context.CallActivityAsync<bool>(nameof(ValidateCaptchaAsync), captchaResult);
 
+            if (!isCaptchaValid) return new List<string> { "invalid captcha" };
+
             // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
             return new List<string>
             {
@@ -56,6 +58,13 @@ namespace nateisthe.name.Function
 
             var response = await client.GetAsync(uri);
             var captchaValidateResponse = await response.Content.ReadFromJsonAsync<CaptchaValidateResponse>();
+            if (!captchaValidateResponse.Success)
+            {
+                foreach (var error in captchaValidateResponse.ErrorCodes)
+                {
+                    log.LogError(error);
+                }
+            }
 
             return captchaValidateResponse.Success;
         }
