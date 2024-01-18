@@ -11,8 +11,7 @@ function IntroPage({ callback }: IntroPageProps) {
   const siteKey: string = process.env.CAPTCHA_SITE_KEY || "";
 
   async function onCaptchaChange(value: any) {
-    console.log(value);
-    const rootUri = process.env.ROOT_URI;
+    const rootUri = window.location.origin;
     const url = `${rootUri}/api/MyFunctionOrchestration_HttpStart`;
     const data = JSON.stringify(value);
     const response = await fetch(url, {

@@ -35,7 +35,6 @@ module.exports = {
       "process.env.CAPTCHA_SITE_KEY": JSON.stringify(
         process.env.CAPTCHA_SITE_KEY
       ),
-      "process.env.ROOT_URI": JSON.stringify(process.env.ROOT_URI),
     }),
   ],
   output: {

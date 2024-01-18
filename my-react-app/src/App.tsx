@@ -1,12 +1,13 @@
 import React from "react";
 import "./App.css";
 import IntroPage, { IntroPageCompletionCallback } from "./modules/IntroPage";
+import OrchestrationStart from "./models/orchestration_start";
 
 function App() {
   const siteKey: string = process.env.CAPTCHA_SITE_KEY || "";
 
   function renderPage() {
-    return <IntroPage callback={(_: IntroPageCompletionCallback) => {}} />;
+    return <IntroPage callback={(_: OrchestrationStart) => {}} />;
   }
 
   return (
