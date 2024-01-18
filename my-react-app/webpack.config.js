@@ -3,6 +3,7 @@ const InlineSourceWebpackPlugin = require("inline-source-webpack-plugin");
 const webpack = require("webpack");
 require("dotenv").config();
 
+console.log(JSON.stringify(process.env.CAPTCHA_SITE_KEY));
 module.exports = {
   entry: "./src/index.tsx",
   module: {
