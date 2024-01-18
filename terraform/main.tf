@@ -63,7 +63,8 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   }
 
   app_settings = {
-    CaptchaSecretKey = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/captcha-secret)"
+    CaptchaSecretKey    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/captcha-secret)"
+    AcsConnectionString = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/acs_connection_string"
   }
 
   identity {
@@ -71,8 +72,10 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   }
 }
 
-output "app_uri" {
-  value = azurerm_linux_function_app.reservations_function_app.default_hostname
+resource "azurerm_communication_service" "my_acs" {
+  name                = "nateisthename-communicationservice"
+  resource_group_name = azurerm_resource_group.my_rg.name
+  data_location       = "United States"
 }
 
 resource "azurerm_key_vault" "my_key_vault" {
@@ -85,6 +88,12 @@ resource "azurerm_key_vault" "my_key_vault" {
   purge_protection_enabled    = false
 
   sku_name = "standard"
+}
+
+resource "azurerm_key_vault_secret" "acs" {
+  name         = "acs_connection_string"
+  value        = azurerm_communication_service.my_acs.primary_connection_string
+  key_vault_id = azurerm_key_vault.my_key_vault.id
 }
 
 resource "azurerm_key_vault_access_policy" "fa_access_policy" {
