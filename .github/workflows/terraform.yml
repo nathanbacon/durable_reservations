@@ -95,7 +95,7 @@ jobs:
           dotnet publish '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/MyFunction.csproj' -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunctionBuild'
 
       - name: Publish App
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunctionBuild/
