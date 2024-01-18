@@ -3,7 +3,6 @@ const InlineSourceWebpackPlugin = require("inline-source-webpack-plugin");
 const webpack = require("webpack");
 require("dotenv").config();
 
-console.log(JSON.stringify(process.env.CAPTCHA_SITE_KEY));
 module.exports = (env) => ({
   entry: "./src/index.tsx",
   module: {
@@ -33,7 +32,9 @@ module.exports = (env) => ({
       noAssetMatch: "warn",
     }),
     new webpack.DefinePlugin({
-      "process.env.CAPTCHA_SITE_KEY": JSON.stringify(env.CAPTCHA_SITE_KEY),
+      "process.env.CAPTCHA_SITE_KEY": JSON.stringify(
+        env.CAPTCHA_SITE_KEY || process.env.CAPTCHA_SITE_KEY
+      ),
     }),
   ],
   output: {
