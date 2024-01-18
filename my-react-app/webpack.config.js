@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const InlineSourceWebpackPlugin = require("inline-source-webpack-plugin");
 const webpack = require("webpack");
+require("dotenv").config();
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -31,7 +32,10 @@ module.exports = {
       noAssetMatch: "warn",
     }),
     new webpack.DefinePlugin({
-      "process.env.CAPTCHA_SITE_KEY": process.env.CAPTCHA_SITE_KEY,
+      "process.env.CAPTCHA_SITE_KEY": JSON.stringify(
+        process.env.CAPTCHA_SITE_KEY
+      ),
+      "process.env.ROOT_URI": JSON.stringify(process.env.ROOT_URI),
     }),
   ],
   output: {

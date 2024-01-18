@@ -44,7 +44,13 @@ jobs:
           terraform apply -auto-approve -input=false \
           -var "captcha_site_key=${{ vars.CAPTCHA_SITE_KEY }}" \
           -var "tenant_id=${{ vars.TENANT_ID }}"
+
+          app_uri=$(terraform output -raw app_uri)
         working-directory: ./terraform
+
+      - name: Terraform Output
+        run: |
+          echo "APP_URI=$(terraform output -raw app_uri)" >> $GITHUB_ENV
 
       - name: Logout
         run: |
@@ -72,7 +78,9 @@ jobs:
 
       - name: Build with Webpack
         run: |
-          npx webpack --config webpack.config.js --env CAPTCHA_SITE_KEY=${{ vars.CAPTCHA_SITE_KEY }}
+          npx webpack --config webpack.config.js \
+            --env CAPTCHA_SITE_KEY=${{ vars.CAPTCHA_SITE_KEY }}
+            --env ROOT_URI=${{ env.APP_URI }}
         working-directory: ./my-react-app
 
       - name: Copy my-react-app

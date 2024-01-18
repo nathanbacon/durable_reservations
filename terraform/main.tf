@@ -72,6 +72,10 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   }
 }
 
+output "app_uri" {
+  value = azurerm_linux_function_app.reservations_function_app.default_hostname
+}
+
 resource "azurerm_key_vault" "my_key_vault" {
   name                        = "mykeyvault-reservations"
   location                    = azurerm_resource_group.my_rg.location
