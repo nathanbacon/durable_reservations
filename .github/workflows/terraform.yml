@@ -50,7 +50,13 @@ jobs:
 
       - name: Terraform Output
         run: |
-          echo "APP_URI=$(terraform output -raw app_uri)" >> $GITHUB_ENV
+          echo $(terraform output -raw app_uri) >> app_uri.txt
+
+      - name: Upload App Uri Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app_uri
+          path: app_uri.txt
 
       - name: Logout
         run: |
@@ -58,6 +64,7 @@ jobs:
 
   build:
     name: "Build"
+    needs: terraform
     runs-on: ubuntu-latest
     env:
       DOTNET_VERSION: "6.0.x"
@@ -75,6 +82,15 @@ jobs:
       - name: Install dependencies
         run: npm install
         working-directory: ./my-react-app
+
+      - name: Download App Uri Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app_uri
+
+      - name: Pass App Uri to Environment
+        run: |
+          echo APP_URI=$(cat app_uri.txt) >> $GITHUB_ENV
 
       - name: Build with Webpack
         run: |
