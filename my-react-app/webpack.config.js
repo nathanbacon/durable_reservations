@@ -4,7 +4,7 @@ const webpack = require("webpack");
 require("dotenv").config();
 
 console.log(JSON.stringify(process.env.CAPTCHA_SITE_KEY));
-module.exports = {
+module.exports = (env) => ({
   entry: "./src/index.tsx",
   module: {
     rules: [
@@ -33,9 +33,7 @@ module.exports = {
       noAssetMatch: "warn",
     }),
     new webpack.DefinePlugin({
-      "process.env.CAPTCHA_SITE_KEY": JSON.stringify(
-        process.env.CAPTCHA_SITE_KEY
-      ),
+      "process.env.CAPTCHA_SITE_KEY": JSON.stringify(env.CAPTCHA_SITE_KEY),
     }),
   ],
   output: {
@@ -44,4 +42,4 @@ module.exports = {
   optimization: {
     minimize: false,
   },
-};
+});
