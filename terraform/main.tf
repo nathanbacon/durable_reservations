@@ -66,7 +66,7 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
 
   app_settings = {
     CaptchaSecretKey    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/captcha-secret)"
-    AcsConnectionString = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/acs_connection_string"
+    AcsConnectionString = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/acs-connection-string"
   }
 
   identity {
