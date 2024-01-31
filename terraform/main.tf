@@ -21,12 +21,12 @@ provider "azurerm" {
 }
 
 variable "captcha_site_key" {
-  type = string
+  type    = string
   default = "none"
 }
 
 variable "tenant_id" {
-  type = string
+  type    = string
   default = "00000000-0000-0000-0000-000000000000"
 }
 
