@@ -88,6 +88,7 @@ resource "azurerm_key_vault" "my_key_vault" {
   tenant_id                   = var.tenant_id
   soft_delete_retention_days  = 7
   purge_protection_enabled    = false
+  enable_rbac_authorization   = true
 
   sku_name = "standard"
 }
@@ -98,12 +99,8 @@ resource "azurerm_key_vault_secret" "acs" {
   key_vault_id = azurerm_key_vault.my_key_vault.id
 }
 
-resource "azurerm_key_vault_access_policy" "fa_access_policy" {
-  key_vault_id = azurerm_key_vault.my_key_vault.id
-  tenant_id    = var.tenant_id
-  object_id    = azurerm_linux_function_app.reservations_function_app.identity[0].principal_id
-
-  secret_permissions = [
-    "Get",
-  ]
+resource "azurerm_role_assignment" "fa_role_assignment" {
+  scope                = azurerm_key_vault.my_key_vault.id
+  principal_id         = azurerm_linux_function_app.reservations_function_app.identity[0].principal_id
+  role_definition_name = "Key Vault Secrets User"
 }
