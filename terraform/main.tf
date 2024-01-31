@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.89.0"
     }
+    azapi = {
+      source  = "Azure/azapi"
+      version = "1.12.0"
+    }
   }
 
   backend "azurerm" {
@@ -12,6 +16,9 @@ terraform {
     container_name       = "reservations"
     key                  = "terraform.tfstate"
   }
+}
+
+provider "azapi" {
 }
 
 provider "azurerm" {
@@ -80,10 +87,23 @@ resource "azurerm_communication_service" "my_acs" {
   data_location       = "United States"
 }
 
-resource "azurerm_email_communication_service" "example" {
+resource "azurerm_email_communication_service" "my_acs_emailservice" {
   name                = "nateisthename-emailcommunicationservice"
   resource_group_name = azurerm_resource_group.my_rg.name
   data_location       = "United States"
+}
+
+resource "azapi_resource" "mydomain" {
+  type      = "Microsoft.Communication/emailServices/domains@2023-04-01-preview"
+  name      = "AzureManagedDomain"
+  location  = "global"
+  parent_id = azurerm_email_communication_service.my_acs_emailservice.id
+  body = jsonencode({
+    properties = {
+      domainManagement       = "AzureManaged"
+      userEngagementTracking = "Disabled"
+    }
+  })
 }
 
 resource "azurerm_key_vault" "my_key_vault" {
