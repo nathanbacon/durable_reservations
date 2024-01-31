@@ -91,7 +91,7 @@ resource "azurerm_key_vault" "my_key_vault" {
 }
 
 resource "azurerm_key_vault_secret" "acs" {
-  name         = "acs_connection_string"
+  name         = "acs-connection-string"
   value        = azurerm_communication_service.my_acs.primary_connection_string
   key_vault_id = azurerm_key_vault.my_key_vault.id
 }
