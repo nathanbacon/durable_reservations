@@ -80,6 +80,12 @@ resource "azurerm_communication_service" "my_acs" {
   data_location       = "United States"
 }
 
+resource "azurerm_email_communication_service" "example" {
+  name                = "nateisthename-emailcommunicationservice"
+  resource_group_name = azurerm_resource_group.my_rg.name
+  data_location       = "United States"
+}
+
 resource "azurerm_key_vault" "my_key_vault" {
   name                        = "mykeyvault-reservations"
   location                    = azurerm_resource_group.my_rg.location
