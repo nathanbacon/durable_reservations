@@ -1,4 +1,4 @@
-interface OrchestrationStart {
+interface OrchestrationModel {
   statusQueryGetUri: string;
   sendEventPostUri: string;
   resumePostUri: string;
@@ -7,4 +7,4 @@ interface OrchestrationStart {
   restartPostUri: string;
 }
 
-export default OrchestrationStart;
+export default OrchestrationModel;

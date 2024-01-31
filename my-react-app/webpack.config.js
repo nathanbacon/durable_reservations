@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const InlineSourceWebpackPlugin = require("inline-source-webpack-plugin");
+const path = require("path");
 const webpack = require("webpack");
 require("dotenv").config();
 
@@ -14,7 +15,7 @@ module.exports = (env) => ({
       },
       {
         test: /\.(css)$/,
-        use: [{ loader: "css-loader" }],
+        use: ["style-loader", "css-loader"],
       },
     ],
   },
@@ -35,12 +36,20 @@ module.exports = (env) => ({
       "process.env.CAPTCHA_SITE_KEY": JSON.stringify(
         env.CAPTCHA_SITE_KEY || process.env.CAPTCHA_SITE_KEY
       ),
+      "process.env.API_ROOT": JSON.stringify(process.env.API_ROOT),
     }),
   ],
   output: {
-    filename: "bundle.js",
+    filename: "bundle",
   },
   optimization: {
     minimize: false,
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
+    compress: true,
+    port: 9000,
   },
 });

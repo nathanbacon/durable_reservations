@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
-import IntroPage, { IntroPageCompletionCallback } from "./modules/IntroPage";
-import OrchestrationStart from "./models/orchestration_start";
+import "react-calendar/dist/Calendar.css";
+import "react-time-picker/dist/TimePicker.css";
+import IntroPage from "./pages/IntroPage";
+import OrchestrationModel from "./models/orchestration";
+import ReservationPage from "./pages/ReservationPage";
 
 function App() {
-  const siteKey: string = process.env.CAPTCHA_SITE_KEY || "";
+  const [orchestrationModel, setOrchestrationModel] =
+    useState<OrchestrationModel>();
+
+  function onOrchestrationStart(orch: OrchestrationModel) {
+    setOrchestrationModel(orch);
+  }
 
   function renderPage() {
-    return <IntroPage callback={(_: OrchestrationStart) => {}} />;
+    if (!orchestrationModel) {
+      return <IntroPage callback={onOrchestrationStart} />;
+    }
+
+    return <ReservationPage orchestrationModel={orchestrationModel} />;
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hello, world!</h1>
-      </header>
+    <div className="app">
       <div>{renderPage()}</div>
     </div>
   );

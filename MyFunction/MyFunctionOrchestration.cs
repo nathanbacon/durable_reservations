@@ -30,13 +30,16 @@ namespace nateisthe.name.Function
 
             if (!isCaptchaValid) return new List<string> { "invalid captcha" };
 
-            // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
+            context.SetCustomStatus("CAPTCHA_VERIFIED");
+
+            var waitForCalendarSelection = context.WaitForExternalEvent<string>("AppointmentRequested", TimeSpan.FromSeconds(30));
+            await waitForCalendarSelection;
+
             return new List<string>
             {
                 isCaptchaValid ? "valid": "invalid",
             };
         }
-
 
         [FunctionName("index")]
         public static IActionResult GetHomePage([HttpTrigger(AuthorizationLevel.Anonymous)] HttpRequest req, ExecutionContext context)
@@ -59,6 +62,7 @@ namespace nateisthe.name.Function
 
             var response = await client.GetAsync(uri);
             var captchaValidateResponse = await response.Content.ReadFromJsonAsync<CaptchaValidateResponse>();
+
             if (!captchaValidateResponse.Success)
             {
                 log.LogInformation("captcha failed");
