@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.86.0"
+      version = "3.89.0"
     }
   }
 
@@ -22,10 +22,12 @@ provider "azurerm" {
 
 variable "captcha_site_key" {
   type = string
+  default = "none"
 }
 
 variable "tenant_id" {
   type = string
+  default = "00000000-0000-0000-0000-000000000000"
 }
 
 resource "azurerm_resource_group" "my_rg" {
