@@ -82,7 +82,7 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
     CaptchaSecretKey    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/captcha-secret)"
     AcsConnectionString = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/acs-connection-string"
     AcsEndpoint         = jsondecode(azapi_resource.my_communicationservice.output).properties.hostName
-    AcsSender           = jsondecode(azapi_resource.mydomain.output).properties.fromSenderDomain
+    AcsSender           = "https://${jsondecode(azapi_resource.mydomain.output).properties.fromSenderDomain}"
   }
 
   identity {
