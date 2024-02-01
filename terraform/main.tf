@@ -74,6 +74,7 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   app_settings = {
     CaptchaSecretKey    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/captcha-secret)"
     AcsConnectionString = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.my_key_vault.vault_uri}/secrets/acs-connection-string"
+    AcsEndpoint         = jsondecode(azapi_resource.my_communicationservice.output).properties.hostName
   }
 
   identity {
@@ -86,6 +87,7 @@ resource "azapi_resource" "my_communicationservice" {
   name      = "mycommunicationservice-ng1963"
   location  = "global"
   parent_id = azurerm_resource_group.my_rg.id
+
   body = jsonencode({
     properties = {
       dataLocation = "United States"
@@ -94,6 +96,8 @@ resource "azapi_resource" "my_communicationservice" {
       ]
     }
   })
+
+  response_export_values = ["properties.hostName"]
 }
 
 resource "azurerm_email_communication_service" "my_acs_emailservice" {
@@ -113,6 +117,7 @@ resource "azapi_resource" "mydomain" {
       userEngagementTracking = "Disabled"
     }
   })
+
 }
 
 resource "azurerm_key_vault" "my_key_vault" {
@@ -128,11 +133,11 @@ resource "azurerm_key_vault" "my_key_vault" {
   sku_name = "standard"
 }
 
-resource "azurerm_key_vault_secret" "acs" {
+/* resource "azurerm_key_vault_secret" "acs" {
   name         = "acs-connection-string"
   value        = azurerm_communication_service.my_acs.primary_connection_string
   key_vault_id = azurerm_key_vault.my_key_vault.id
-}
+} */
 
 resource "azurerm_role_assignment" "fa_role_assignment" {
   scope                = azurerm_key_vault.my_key_vault.id
