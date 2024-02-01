@@ -120,6 +120,11 @@ resource "azapi_resource" "mydomain" {
 
 }
 
+data "azurerm_key_vault" "general_secrets" {
+  name                = "nateisthenamesecrets"
+  resource_group_name = "tfstateresources"
+}
+
 resource "azurerm_key_vault" "my_key_vault" {
   name                        = "mykeyvault-reservations"
   location                    = azurerm_resource_group.my_rg.location
@@ -131,6 +136,17 @@ resource "azurerm_key_vault" "my_key_vault" {
   enable_rbac_authorization   = true
 
   sku_name = "standard"
+}
+
+data "azurerm_key_vault_secret" "captcha_site_key" {
+  name         = "ReservationsCaptchaSecretKey"
+  key_vault_id = data.azurerm_key_vault.general_secrets.id
+}
+
+resource "azurerm_key_vault_secret" "captcha_site_key" {
+  name         = "captcha-secret"
+  key_vault_id = azurerm_key_vault.my_key_vault.id
+  value        = data.azurerm_key_vault_secret.captcha_site_key.value
 }
 
 /* resource "azurerm_key_vault_secret" "acs" {
