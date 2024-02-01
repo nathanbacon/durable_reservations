@@ -56,6 +56,17 @@ namespace nateisthe.name.Function
             };
         }
 
+        [FunctionName("bundle")]
+        public static IActionResult GetBundle([HttpTrigger(AuthorizationLevel.Anonymous)] HttpRequest req, ExecutionContext context)
+        {
+            var path = Path.Combine(context.FunctionAppDirectory, "content", "bundle");
+            return new ContentResult
+            {
+                Content = File.ReadAllText(path),
+                ContentType = "text/html",
+            };
+        }
+
         [FunctionName(nameof(SendConfirmationEmail))]
         public async Task<bool> SendConfirmationEmail([ActivityTrigger] CalendarEvent calendarEvent, ILogger log)
         {
