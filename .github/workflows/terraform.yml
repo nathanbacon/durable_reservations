@@ -82,6 +82,7 @@ jobs:
         run: |
           mkdir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/content
           mv ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/my-react-app/dist/index.html ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/content/index.html
+          mv ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/my-react-app/dist/bundle ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyFunction/content/bundle
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3

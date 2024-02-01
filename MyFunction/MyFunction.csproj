@@ -27,7 +27,7 @@
     </None>
   </ItemGroup>
     <ItemGroup>
-    <None Update="content/bundle.js">
+    <None Update="content/bundle">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
