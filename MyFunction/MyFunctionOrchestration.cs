@@ -92,7 +92,7 @@ namespace nateisthe.name.Function
             var captchaSecretKey = Environment.GetEnvironmentVariable("CaptchaSecretKey");
             var client = new HttpClient();
             var uri = new Uri($"https://www.google.com/recaptcha/api/siteverify?secret={captchaSecretKey}&response={captchaResult}");
-            log.LogInformation(uri.ToString());
+            //log.LogInformation(uri.ToString());
 
             var response = await client.GetAsync(uri);
             var captchaValidateResponse = await response.Content.ReadFromJsonAsync<CaptchaValidateResponse>();
