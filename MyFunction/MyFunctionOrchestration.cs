@@ -18,9 +18,8 @@ namespace nateisthe.name.Function
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly EmailClient _emailClient;
-        public MyFunctionOrchestration(IHttpClientFactory httpClientFactory, EmailClient emailClient)
+        public MyFunctionOrchestration(EmailClient emailClient)
         {
-            _httpClientFactory = httpClientFactory;
             _emailClient = emailClient;
         }
 
