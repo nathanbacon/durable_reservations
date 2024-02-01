@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Azure.Communication.Email;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -16,9 +17,11 @@ namespace nateisthe.name.Function
     public class MyFunctionOrchestration
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public MyFunctionOrchestration(IHttpClientFactory httpClientFactory)
+        private readonly EmailClient _emailClient;
+        public MyFunctionOrchestration(IHttpClientFactory httpClientFactory, EmailClient emailClient)
         {
             _httpClientFactory = httpClientFactory;
+            _emailClient = emailClient;
         }
 
         [FunctionName("MyFunctionOrchestration")]
@@ -32,8 +35,9 @@ namespace nateisthe.name.Function
 
             context.SetCustomStatus("CAPTCHA_VERIFIED");
 
-            var waitForCalendarSelection = context.WaitForExternalEvent<string>("AppointmentRequested", TimeSpan.FromSeconds(30));
-            await waitForCalendarSelection;
+            var calendarEvent = context.WaitForExternalEvent<CalendarEvent>("AppointmentRequested", TimeSpan.FromSeconds(90));
+
+            var emailSuccess = await context.CallActivityAsync<bool>(nameof(SendConfirmationEmail), calendarEvent);
 
             return new List<string>
             {
@@ -50,6 +54,24 @@ namespace nateisthe.name.Function
                 Content = File.ReadAllText(path),
                 ContentType = "text/html",
             };
+        }
+
+        [FunctionName(nameof(SendConfirmationEmail))]
+        public async Task<bool> SendConfirmationEmail([ActivityTrigger] CalendarEvent calendarEvent, ILogger log)
+        {
+            var subject = "Hello";
+            var htmlContent = @"
+                <html>
+                    <body>
+                        <h1>Hello, world</h1><br/>
+                    </body>
+                </html>
+            ";
+            var recipient = calendarEvent.Email;
+            var from = Environment.GetEnvironmentVariable("AcsSender");
+            var emailOperation = await _emailClient.SendAsync(Azure.WaitUntil.Completed, senderAddress: from, recipientAddress: recipient, subject: subject, htmlContent: htmlContent);
+            log.LogInformation("email " + (emailOperation.Value.Status == EmailSendStatus.Succeeded ? "success" : emailOperation.Value.ToString()));
+            return emailOperation.Value.Status == EmailSendStatus.Succeeded;
         }
 
         [FunctionName(nameof(ValidateCaptchaAsync))]
