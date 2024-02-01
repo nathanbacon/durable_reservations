@@ -81,10 +81,19 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   }
 }
 
-resource "azurerm_communication_service" "my_acs" {
-  name                = "nateisthename-communicationservice"
-  resource_group_name = azurerm_resource_group.my_rg.name
-  data_location       = "United States"
+resource "azapi_resource" "my_communicationservice" {
+  type      = "Microsoft.Communication/communicationServices@2023-04-01-preview"
+  name      = "mycommunicationservice-ng1963"
+  location  = "global"
+  parent_id = azurerm_resource_group.my_rg.id
+  body = jsonencode({
+    properties = {
+      dataLocation = "United States"
+      linkedDomains = [
+        azapi_resource.mydomain.id
+      ]
+    }
+  })
 }
 
 resource "azurerm_email_communication_service" "my_acs_emailservice" {
