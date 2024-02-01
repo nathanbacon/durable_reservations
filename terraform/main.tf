@@ -58,6 +58,13 @@ resource "azurerm_service_plan" "reservations_functions" {
   sku_name            = "Y1"
 }
 
+resource "azurerm_application_insights" "appinsights" {
+  name                = "reservations-appinsights"
+  location            = azurerm_resource_group.my_rg.location
+  resource_group_name = azurerm_resource_group.my_rg.name
+  application_type    = "web"
+}
+
 resource "azurerm_linux_function_app" "reservations_function_app" {
   name                = "reservations-function-app"
   resource_group_name = azurerm_resource_group.my_rg.name
@@ -68,7 +75,7 @@ resource "azurerm_linux_function_app" "reservations_function_app" {
   service_plan_id            = azurerm_service_plan.reservations_functions.id
 
   site_config {
-
+    application_insights_connection_string = azurerm_application_insights.appinsights.connection_string
   }
 
   app_settings = {
