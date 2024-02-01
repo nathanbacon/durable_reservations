@@ -16,9 +16,7 @@ namespace nateisthe.name.Function
       var acsEndpoint = Environment.GetEnvironmentVariable("AcsEndpoint");
       builder.Services.AddTransient((_) =>
       {
-        throw new Exception(acsEndpoint);
-
-        return new EmailClient(new Uri(acsEndpoint), new DefaultAzureCredential())
+        return new EmailClient(new Uri(acsEndpoint), new DefaultAzureCredential());
       });
     }
   }
