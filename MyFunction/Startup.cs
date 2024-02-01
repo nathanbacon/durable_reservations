@@ -13,8 +13,6 @@ namespace nateisthe.name.Function
   {
     public override void Configure(IFunctionsHostBuilder builder)
     {
-      builder.Services.AddHttpClient();
-
       var acsEndpoint = Environment.GetEnvironmentVariable("AcsEndpoint");
       builder.Services.AddTransient((_) =>
         new EmailClient(new Uri(acsEndpoint), new DefaultAzureCredential())
